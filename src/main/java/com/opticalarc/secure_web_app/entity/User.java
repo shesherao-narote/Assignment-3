@@ -29,8 +29,7 @@ public class User {
     @Email(message = "Email should be valid")
     private String email;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'USER'")
     @NotBlank(message = "Roles can not be blank")
-    private String roles = "USER";
+    private String roles ;
 
 }
