@@ -1,5 +1,6 @@
 package com.opticalarc.secure_web_app.controller;
 
+import com.opticalarc.secure_web_app.dto.ApiResponse;
 import com.opticalarc.secure_web_app.dto.UserDTO;
 import com.opticalarc.secure_web_app.entity.User;
 import com.opticalarc.secure_web_app.service.UserService;
@@ -42,6 +43,13 @@ public class UserController {
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long userId, @RequestBody UserDTO userDTO){
         UserDTO updatedUser = userService.updateUser(userId, userDTO);
         return new ResponseEntity<UserDTO>(updatedUser, HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId){
+        userService.deleteUser(userId);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("User with id " + userId + " deleted successfully",true),HttpStatus.OK);
     }
 
 }
