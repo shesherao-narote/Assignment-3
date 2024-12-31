@@ -1,6 +1,7 @@
 package com.opticalarc.secure_web_app.controller;
 
 import com.opticalarc.secure_web_app.dto.UserDTO;
+import com.opticalarc.secure_web_app.entity.User;
 import com.opticalarc.secure_web_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,13 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAllUsers(){
         List<UserDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId){
+        UserDTO userDTO = userService.getUserById(userId);
+        return new ResponseEntity<UserDTO>(userDTO,HttpStatus.OK);
     }
 
 }

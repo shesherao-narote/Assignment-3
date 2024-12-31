@@ -2,6 +2,7 @@ package com.opticalarc.secure_web_app.serviceImpl;
 
 import com.opticalarc.secure_web_app.dto.UserDTO;
 import com.opticalarc.secure_web_app.entity.User;
+import com.opticalarc.secure_web_app.exception.ResourceNotFoundException;
 import com.opticalarc.secure_web_app.repository.UserRepository;
 import com.opticalarc.secure_web_app.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -28,10 +29,13 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public UserDTO getUserById(Long id) {
-        return null;
+        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "Id", id));
+        return modelMapper.map(user, UserDTO.class);
     }
+
 
     @Override
     public UserDTO addUser(UserDTO userDTO) {
