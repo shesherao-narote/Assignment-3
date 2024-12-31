@@ -52,7 +52,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Long id, UserDTO userDTO) {
-        return null;
+        User existedUser = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "Id", id));
+        existedUser.setEmail(userDTO.getEmail());
+        existedUser.setUsername(userDTO.getUsername());
+        existedUser.setPassword(userDTO.getPassword());
+        userRepository.save(existedUser);
+        return modelMapper.map(existedUser, UserDTO.class);
     }
 
 
