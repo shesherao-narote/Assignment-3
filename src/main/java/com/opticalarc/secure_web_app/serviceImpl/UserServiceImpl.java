@@ -7,6 +7,7 @@ import com.opticalarc.secure_web_app.repository.UserRepository;
 import com.opticalarc.secure_web_app.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -40,7 +44,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO addUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
-        user.setRoles("USER");
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setRoles("ROLE_USER");
         User savedUser = userRepository.save(user);
         return modelMapper.map(savedUser, UserDTO.class);
     }

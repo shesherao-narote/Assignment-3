@@ -52,4 +52,14 @@ public class UserController {
         return new ResponseEntity<ApiResponse>(new ApiResponse("User with id " + userId + " deleted successfully",true),HttpStatus.OK);
     }
 
+    @GetMapping("/admin")
+    public ResponseEntity<String> getAdminPage(){
+        return ResponseEntity.ok("Welcome to ADMIN page!!!");
+    }
+
+    @GetMapping("/normalUser")
+    public ResponseEntity<String> getUserPage(){
+        return ResponseEntity.ok("Welcome to USER page!!!");
+    }
+
 }
