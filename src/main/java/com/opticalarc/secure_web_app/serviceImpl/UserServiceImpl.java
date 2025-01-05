@@ -4,9 +4,13 @@ import com.opticalarc.secure_web_app.dto.UserDTO;
 import com.opticalarc.secure_web_app.entity.User;
 import com.opticalarc.secure_web_app.exception.ResourceNotFoundException;
 import com.opticalarc.secure_web_app.repository.UserRepository;
+import com.opticalarc.secure_web_app.security.JWTUtil;
 import com.opticalarc.secure_web_app.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,25 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTUtil jwtUtil;
+
+
+    @Override
+    public String verify(UserDTO userDTO) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken
+                        (userDTO.getUsername(),userDTO.getPassword()));
+
+        if (authentication.isAuthenticated()){
+            return jwtUtil.generateToken(userDTO.getUsername());
+        }
+        return "failed";
+    }
 
     @Override
     public List<UserDTO> getAllUsers() {

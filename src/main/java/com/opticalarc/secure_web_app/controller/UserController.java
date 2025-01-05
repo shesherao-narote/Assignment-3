@@ -18,6 +18,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @PostMapping("/login")
+    public ResponseEntity<String> authenticate(@RequestBody UserDTO userDTO){
+        String token = userService.verify(userDTO);
+        return ResponseEntity.ok(token);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO){
         UserDTO savedUser = userService.addUser(userDTO);
