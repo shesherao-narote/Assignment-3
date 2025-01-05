@@ -37,6 +37,10 @@ public class User implements UserDetails {
     @NotBlank(message = "Roles can not be blank")
     private String roles ;
 
+
+    @OneToOne(mappedBy = "user")
+    private RefreshToken refreshToken;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.roles));

@@ -1,8 +1,9 @@
 package com.opticalarc.secure_web_app.controller;
 
-import com.opticalarc.secure_web_app.dto.ApiResponse;
-import com.opticalarc.secure_web_app.dto.UserDTO;
+import com.opticalarc.secure_web_app.dto.*;
 import com.opticalarc.secure_web_app.entity.User;
+import com.opticalarc.secure_web_app.security.JWTUtil;
+import com.opticalarc.secure_web_app.service.RefreshTokenService;
 import com.opticalarc.secure_web_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,42 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    @Autowired
+    private JWTUtil jwtUtil;
+
+    @Autowired
+    private JwtResponse jwtResponse;
+
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody UserDTO userDTO){
+    public ResponseEntity<JwtResponse> authenticate(@RequestBody UserDTO userDTO){
         String token = userService.verify(userDTO);
-        return ResponseEntity.ok(token);
+        RefreshTokenDTO refreshToken = refreshTokenService.createRefreshToken(userDTO.getUsername());
+
+        JwtResponse response = JwtResponse.builder()
+                .jwtToken(token)
+                .refreshToken(refreshToken.getRefreshToken())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtResponse> refreshJwtToken(@RequestBody RefreshTokenRequest request) {
+
+        try {
+            RefreshTokenDTO refreshToken = refreshTokenService.verifyRefreshToken(request.getRefreshToken());
+            UserDTO user = refreshToken.getUser();
+            String token = jwtUtil.generateToken(user.getUsername());
+            jwtResponse.setJwtToken(token);
+            jwtResponse.setRefreshToken(refreshToken.getRefreshToken());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return new ResponseEntity<>(jwtResponse,HttpStatus.OK);
     }
 
     @PostMapping("/add")
