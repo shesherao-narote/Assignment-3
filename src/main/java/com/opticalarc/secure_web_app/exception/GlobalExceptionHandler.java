@@ -1,6 +1,8 @@
 package com.opticalarc.secure_web_app.exception;
 
 import com.opticalarc.secure_web_app.dto.ApiResponse;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,6 +24,31 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse(message, false);
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ApiResponse> invalidTokenExceptionHandler(InvalidTokenException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+/*
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ApiResponse> signatureExceptionHandler(SignatureException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ApiResponse> malformedJwtExceptionHandler(MalformedJwtException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+
 
     // Handle invalid credentials
     @ExceptionHandler(BadCredentialsException.class)
@@ -58,5 +85,15 @@ public class GlobalExceptionHandler {
         response.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse> handleGlobalExceptions(Exception ex) {
+        ApiResponse apiResponse = new ApiResponse("An unexpected error occurred: " + ex.getMessage(), false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+ */
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.opticalarc.secure_web_app.security;
 
+import com.opticalarc.secure_web_app.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,10 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -61,7 +59,7 @@ public class JWTUtil {
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+           return extractClaim(token, Claims::getSubject);
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
