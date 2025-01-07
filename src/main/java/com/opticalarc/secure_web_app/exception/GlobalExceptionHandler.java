@@ -11,7 +11,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +31,28 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.UNAUTHORIZED);
     }
 
-/*
+    @ExceptionHandler(InvalidUsernamePasswordException.class)
+    public ResponseEntity<ApiResponse> InvalidUsernamePasswordException(InvalidTokenException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmptyListFoundException.class)
+    public ResponseEntity<ApiResponse> emptyListFoundExceptionHandler(EmptyListFoundException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UsernameExtractException.class)
+    public ResponseEntity<ApiResponse> usernameExtractExceptionHandler(UsernameExtractException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
+    }
+
+
 
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<ApiResponse> signatureExceptionHandler(SignatureException ex){
@@ -48,15 +68,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.UNAUTHORIZED);
     }
 
-
-
-    // Handle invalid credentials
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String, String>> handleBadCredentials(BadCredentialsException ex) {
-        Map<String, String> response = new HashMap<>();
-        response.put("error", "Invalid username or password");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-    }
 
     // Handle unauthorized access
     @ExceptionHandler(AccessDeniedException.class)
@@ -76,6 +87,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
+    // Handle BadCredentialsException
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException ex) {
+        return new ResponseEntity<>("Invalid Credentials: " + ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 
     // Handle generic authentication exceptions (AuthenticationException)
     @ExceptionHandler(AuthenticationException.class)
@@ -92,7 +108,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
- */
 
 
 

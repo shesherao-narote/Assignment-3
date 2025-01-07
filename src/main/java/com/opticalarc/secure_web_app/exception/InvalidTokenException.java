@@ -5,10 +5,8 @@ public class InvalidTokenException extends RuntimeException{
     String fieldName;
     String fieldValue;
 
-    public InvalidTokenException(String resourceName, String fieldName, String fieldValue){
-        super(String.format("%s With %s : %s is Invalid",resourceName, fieldName, fieldValue));
+    public InvalidTokenException(String resourceName){
+        super(String.format(" %s is Invalid",resourceName));
         this.resourceName = resourceName;
-        this.fieldName = fieldName;
-        this.fieldValue = fieldValue;
     }
 }

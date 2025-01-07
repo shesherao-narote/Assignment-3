@@ -1,6 +1,7 @@
 package com.opticalarc.secure_web_app.security;
 
 import com.opticalarc.secure_web_app.exception.InvalidTokenException;
+import com.opticalarc.secure_web_app.exception.UsernameExtractException;
 import com.opticalarc.secure_web_app.serviceImpl.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,8 +36,11 @@ public class JWTFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
-            username = jwtUtil.extractUsername(token);
-
+            try {
+                username = jwtUtil.extractUsername(token);
+            }catch (Exception e) {
+                throw new UsernameExtractException("Username extracting error");
+            }
         }
 
         if (username !=null && SecurityContextHolder.getContext().getAuthentication() == null){

@@ -1,7 +1,9 @@
 package com.opticalarc.secure_web_app.controller;
 
 import com.opticalarc.secure_web_app.dto.*;
-import com.opticalarc.secure_web_app.entity.User;
+import com.opticalarc.secure_web_app.exception.EmptyListFoundException;
+import com.opticalarc.secure_web_app.exception.InvalidTokenException;
+import com.opticalarc.secure_web_app.exception.InvalidUsernamePasswordException;
 import com.opticalarc.secure_web_app.security.JWTUtil;
 import com.opticalarc.secure_web_app.service.RefreshTokenService;
 import com.opticalarc.secure_web_app.service.UserService;
@@ -14,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
@@ -35,29 +38,39 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticate(@RequestBody UserDTO userDTO){
         String token = userService.verify(userDTO);
-        RefreshTokenDTO refreshToken = refreshTokenService.createRefreshToken(userDTO.getUsername());
+        if (!Objects.equals(token, "failed")) {
+            RefreshTokenDTO refreshToken = refreshTokenService.createRefreshToken(userDTO.getUsername());
 
-        JwtResponse response = JwtResponse.builder()
-                .jwtToken(token)
-                .refreshToken(refreshToken.getRefreshToken())
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+            JwtResponse response = JwtResponse.builder()
+                    .jwtToken(token)
+                    .refreshToken(refreshToken.getRefreshToken())
+                    .build();
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            throw new InvalidUsernamePasswordException("Error", "Username & Password");
+        }
     }
+
+
 
     @Operation(summary = "Refresh Token", description = "Generate a new access token using a refresh token.")
     @PostMapping("/refresh")
     public ResponseEntity<JwtResponse> refreshJwtToken(@RequestBody RefreshTokenRequest request) {
 
+        RefreshTokenDTO refreshToken = null;
         try {
-            RefreshTokenDTO refreshToken = refreshTokenService.verifyRefreshToken(request.getRefreshToken());
+            refreshToken = refreshTokenService.verifyRefreshToken(request.getRefreshToken());
+        } catch (Exception e) {
+            throw new InvalidTokenException("RefreshToken");
+        }
+
             UserDTO user = refreshToken.getUser();
             String token = jwtUtil.generateToken(user.getUsername());
             jwtResponse.setJwtToken(token);
             jwtResponse.setRefreshToken(refreshToken.getRefreshToken());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return new ResponseEntity<>(jwtResponse,HttpStatus.OK);
+
+            return new ResponseEntity<>(jwtResponse,HttpStatus.OK);
+
     }
 
     @Operation(summary = "Register", description = "Add user into the data base with the default role(ROLE_USER).")
@@ -72,8 +85,13 @@ public class UserController {
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers(){
-        List<UserDTO> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        try {
+            List<UserDTO> users = userService.getAllUsers();
+            return ResponseEntity.ok(users);
+        }catch (Exception e){
+            throw new EmptyListFoundException("Users Not Found");
+        }
+
     }
 
 
@@ -81,8 +99,12 @@ public class UserController {
     @GetMapping("/{userId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId){
-        UserDTO userDTO = userService.getUserById(userId);
-        return new ResponseEntity<UserDTO>(userDTO,HttpStatus.OK);
+        try {
+            UserDTO userDTO = userService.getUserById(userId);
+            return new ResponseEntity<UserDTO>(userDTO,HttpStatus.OK);
+        }catch (Exception e) {
+            throw new EmptyListFoundException("User Not Found With"+userId);
+        }
     }
 
 

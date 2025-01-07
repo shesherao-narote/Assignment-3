@@ -54,11 +54,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
 
     @Override
-    public RefreshTokenDTO verifyRefreshToken(String refreshToken) throws Exception {
+    public RefreshTokenDTO verifyRefreshToken(String refreshToken) {
         RefreshToken refreshTokenObj = refreshTokenRepository.findByrefreshToken(refreshToken).orElseThrow(()->new ResourceNotFoundException("Token", "Refresh Token",refreshToken));
        if (!refreshTokenObj.getExpiryDate().isAfter(Instant.now())){
            refreshTokenRepository.delete(refreshTokenObj);
-           throw new Exception("Refresh token Expired");
        }
        return modelMapper.map(refreshTokenObj,RefreshTokenDTO.class);
     }

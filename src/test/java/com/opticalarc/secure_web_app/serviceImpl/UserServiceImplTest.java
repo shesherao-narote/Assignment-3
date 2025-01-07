@@ -5,6 +5,7 @@ import com.opticalarc.secure_web_app.entity.User;
 import com.opticalarc.secure_web_app.exception.ResourceNotFoundException;
 import com.opticalarc.secure_web_app.repository.UserRepository;
 import com.opticalarc.secure_web_app.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,6 +35,55 @@ class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+
+
+
+    private UserDTO userDTO;
+    private User existedUser;
+    private User updatedUser;
+
+    @BeforeEach
+    void setUp() {
+        userDTO = new UserDTO();
+        userDTO.setEmail("newemail@example.com");
+        userDTO.setUsername("newusername");
+        userDTO.setPassword("newpassword");
+
+        existedUser = new User();
+        existedUser.setId(1L);
+        existedUser.setEmail("oldemail@example.com");
+        existedUser.setUsername("oldusername");
+        existedUser.setPassword("oldpassword");
+
+        updatedUser = new User();
+        updatedUser.setId(1L);
+        updatedUser.setEmail("newemail@example.com");
+        updatedUser.setUsername("newusername");
+        updatedUser.setPassword("newpassword");
+    }
+
+    @Test
+    void testUpdateUser() {
+        // Setup mocks
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(existedUser));
+        when(userRepository.save(any(User.class))).thenReturn(updatedUser);
+        when(modelMapper.map(any(User.class), eq(UserDTO.class))).thenReturn(userDTO);
+
+        // Execute the method to test
+        UserDTO result = userService.updateUser(1L, userDTO);
+
+        // Verify the interactions and assert the result
+        verify(userRepository).findById(1L);
+        verify(userRepository).save(existedUser);
+        verify(modelMapper).map(updatedUser, UserDTO.class);
+
+        assertNotNull(result);
+        assertEquals("newemail@example.com", result.getEmail());
+        assertEquals("newusername", result.getUsername());
+        assertEquals("newpassword", result.getPassword());
+    }
+
+
 
     @Test
     void testGetAllUsers() {
