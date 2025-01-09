@@ -55,7 +55,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public RefreshTokenDTO verifyRefreshToken(String refreshToken) {
-        RefreshToken refreshTokenObj = refreshTokenRepository.findByrefreshToken(refreshToken).orElseThrow(()->new ResourceNotFoundException("Token", "Refresh Token",refreshToken));
+        RefreshToken refreshTokenObj = refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(()->new ResourceNotFoundException("Token", "Refresh Token",refreshToken));
        if (!refreshTokenObj.getExpiryDate().isAfter(Instant.now())){
            refreshTokenRepository.delete(refreshTokenObj);
        }

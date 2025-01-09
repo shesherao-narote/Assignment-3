@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDTO {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     private Long id;
 
     @NotBlank(message = "Username can not be blank")
@@ -26,4 +26,10 @@ public class UserDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String roles;
+
+//    private boolean enabled;
+//
+//    private boolean emailVerified;
+//
+//    private String emailToken;
 }

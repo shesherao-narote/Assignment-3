@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((req)->
             req.requestMatchers("/user/admin").hasRole("ADMIN")
                     .requestMatchers("/user/normalUser").hasAnyRole("USER","ADMIN")
-                    .requestMatchers("/user/login", "/user/register", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/user/refresh").permitAll()
+                    .requestMatchers("/user/login", "/user/register", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/user/refresh","/auth/verify-email/**","/forgot-password/**").permitAll()
                     .anyRequest().authenticated());
 
         http.httpBasic(Customizer.withDefaults())

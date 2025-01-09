@@ -37,9 +37,17 @@ public class User implements UserDetails {
     @NotBlank(message = "Roles can not be blank")
     private String roles ;
 
+//    private boolean enabled;
+//
+//    private boolean emailVerified;
+//
+//    private String emailToken;
 
     @OneToOne(mappedBy = "user")
     private RefreshToken refreshToken;
+
+    @OneToOne(mappedBy = "user")
+    private ForgotPassword forgotPassword;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

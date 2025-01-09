@@ -5,6 +5,7 @@ import com.opticalarc.secure_web_app.entity.User;
 import com.opticalarc.secure_web_app.exception.ResourceNotFoundException;
 import com.opticalarc.secure_web_app.repository.UserRepository;
 import com.opticalarc.secure_web_app.security.JWTUtil;
+import com.opticalarc.secure_web_app.service.EmailService;
 import com.opticalarc.secure_web_app.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -69,7 +74,12 @@ public class UserServiceImpl implements UserService {
         User user = modelMapper.map(userDTO, User.class);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRoles("ROLE_USER");
+
+//        String emailToken = UUID.randomUUID().toString();
+//        user.setEmailToken(emailToken);
         User savedUser = userRepository.save(user);
+//        String emailLink = EmailLinkGenerator.generateEmailLink(emailToken);
+//        emailService.sendEmail(savedUser.getEmail(),"Verify Account : Secure Web App",emailLink);
         return modelMapper.map(savedUser, UserDTO.class);
     }
 
