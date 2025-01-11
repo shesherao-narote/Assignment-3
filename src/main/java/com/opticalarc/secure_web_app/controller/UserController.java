@@ -36,10 +36,10 @@ public class UserController {
 
     @Operation(summary = "Login", description = "Authenticate a user and generate an access token.")
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> authenticate(@RequestBody UserDTO userDTO){
-        String token = userService.verify(userDTO);
+    public ResponseEntity<JwtResponse> authenticate(@RequestBody LoginDTO loginDTO){
+        String token = userService.verify(loginDTO);
         if (!Objects.equals(token, "failed")) {
-            RefreshTokenDTO refreshToken = refreshTokenService.createRefreshToken(userDTO.getUsername());
+            RefreshTokenDTO refreshToken = refreshTokenService.createRefreshToken(loginDTO.getUsername());
 
             JwtResponse response = JwtResponse.builder()
                     .jwtToken(token)

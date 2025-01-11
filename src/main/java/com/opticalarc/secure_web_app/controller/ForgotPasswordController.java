@@ -38,7 +38,7 @@ public class ForgotPasswordController {
     public ResponseEntity<String> verifyEmail(@PathVariable String email){
         User user = userRepository.findByEmail(email).orElseThrow(()->new ResourceNotFoundException("User","Email",email));
 
-        String status = emailService.sendEmail(user, email);
+        String status = emailService.sendOTPOnEmail(user, email);
         return ResponseEntity.ok(status);
     }
 

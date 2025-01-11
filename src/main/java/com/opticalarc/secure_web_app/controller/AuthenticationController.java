@@ -6,10 +6,7 @@
 //import com.opticalarc.secure_web_app.exception.ResourceNotFoundException;
 //import com.opticalarc.secure_web_app.repository.UserRepository;
 //import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.bind.annotation.RestController;
+//import org.springframework.web.bind.annotation.*;
 //
 //@RestController
 //@RequestMapping("/auth")
@@ -21,6 +18,7 @@
 //
 //    @GetMapping("/verify-email")
 //    public String verifyEmailToken(@RequestParam("token") String token){
+//        System.out.println(token);
 //        User user = userRepository.findByEmailToken(token).orElseThrow(()->new ResourceNotFoundException("User", "Token",token));
 //        if (user.getEmailToken().equals(token)){
 //            user.setEmailVerified(true);

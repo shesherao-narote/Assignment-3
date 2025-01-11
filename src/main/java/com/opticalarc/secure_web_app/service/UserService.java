@@ -1,5 +1,6 @@
 package com.opticalarc.secure_web_app.service;
 
+import com.opticalarc.secure_web_app.dto.LoginDTO;
 import com.opticalarc.secure_web_app.dto.UserDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -17,5 +18,5 @@ public interface UserService {
 
     UserDTO updateUser(Long id, UserDTO userDTO);
 
-    String verify(UserDTO userDTO);
+    String verify(LoginDTO loginDTO);
 }

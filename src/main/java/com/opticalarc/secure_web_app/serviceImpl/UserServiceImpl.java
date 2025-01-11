@@ -1,5 +1,6 @@
 package com.opticalarc.secure_web_app.serviceImpl;
 
+import com.opticalarc.secure_web_app.dto.LoginDTO;
 import com.opticalarc.secure_web_app.dto.UserDTO;
 import com.opticalarc.secure_web_app.entity.User;
 import com.opticalarc.secure_web_app.exception.ResourceNotFoundException;
@@ -42,13 +43,13 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String verify(UserDTO userDTO) {
+    public String verify(LoginDTO loginDTO) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken
-                        (userDTO.getUsername(),userDTO.getPassword()));
+                        (loginDTO.getUsername(),loginDTO.getPassword()));
 
         if (authentication.isAuthenticated()){
-            return jwtUtil.generateToken(userDTO.getUsername());
+            return jwtUtil.generateToken(loginDTO.getUsername());
         }
         return "failed";
     }
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
 //        user.setEmailToken(emailToken);
         User savedUser = userRepository.save(user);
 //        String emailLink = EmailLinkGenerator.generateEmailLink(emailToken);
-//        emailService.sendEmail(savedUser.getEmail(),"Verify Account : Secure Web App",emailLink);
+//        emailService.sendLinkOnEmail(savedUser.getEmail(),"Verify Account : Secure Web App",emailLink);
         return modelMapper.map(savedUser, UserDTO.class);
     }
 
