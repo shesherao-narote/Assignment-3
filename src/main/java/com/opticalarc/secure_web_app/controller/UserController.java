@@ -141,4 +141,8 @@ public class UserController {
         return ResponseEntity.ok("Welcome to USER page!!!");
     }
 
+    public void testingMerge(){
+        System.out.println("Testing Merge..!");
+    }
+
 }
