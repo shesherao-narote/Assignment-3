@@ -145,4 +145,8 @@ public class UserController {
         System.out.println("Testing Merge..!");
     }
 
+    public void testingMerge3(){
+        System.out.println("Testing Merge3..!");
+    }
+
 }
